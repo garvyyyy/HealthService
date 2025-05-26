@@ -1,21 +1,25 @@
 package cn.garvy.project.healthservice.Service.Impl;
 
-import cn.garvy.project.healthservice.Enum.Status;
 import cn.garvy.project.healthservice.Exception.BusinessException;
 import cn.garvy.project.healthservice.Service.UserService;
+import cn.garvy.project.healthservice.common.CodeEnum;
 import cn.garvy.project.healthservice.dao.UserMapper;
+import cn.garvy.project.healthservice.pojo.DTO.ResetPasswordDTO;
 import cn.garvy.project.healthservice.pojo.DTO.UserLoginDTO;
+import cn.garvy.project.healthservice.pojo.DTO.UserRegisterDTO;
 import cn.garvy.project.healthservice.pojo.VO.UserInfoVO;
 import cn.garvy.project.healthservice.pojo.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.sql.SQLException;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+    @Resource
     private UserMapper userMapper;
     @Override
     public List<User> findAllUser() {
@@ -29,9 +33,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserInfoVO login(UserLoginDTO userLoginDTO) {
-        User user = userMapper.findUserByNameANDPassword(userLoginDTO.getName(), userLoginDTO.getPassword());
+        User user = userMapper.findUserByEmailANDPassword(userLoginDTO);
         if(user == null){
-            throw new BusinessException(401, "账号或密码错误");
+            throw new BusinessException(CodeEnum.USER_NOT_EXIST);
         }
         UserInfoVO userInfoVO = new UserInfoVO();
         userInfoVO.setRole(user.getRole());
@@ -41,5 +45,30 @@ public class UserServiceImpl implements UserService {
         userInfoVO.setAvatar(user.getAvatar());
         userInfoVO.setEmail(user.getEmail());
         return userInfoVO;
+    }
+
+    @Override
+    public boolean register(UserRegisterDTO userRegisterDTO) {
+        User user = userMapper.findUserByEmail(userRegisterDTO.getEmail());
+        if(user != null){
+            throw new BusinessException(CodeEnum.USER_EXIST);
+        }
+        boolean success = userMapper.insertUser(userRegisterDTO.getEmail(), userRegisterDTO.getPassword());
+        if(! success){
+            throw new BusinessException(CodeEnum.SERVER_ERROR);
+        }
+        return true;
+    }
+
+    public boolean resetPassword(ResetPasswordDTO resetPasswordDTO){
+        User user = userMapper.findUserByEmail(resetPasswordDTO.getEmail());
+        if(user == null){
+            throw new BusinessException(CodeEnum.EMAIL_NOT_REGISTERED);
+        }
+        boolean success = userMapper.updatePassword(resetPasswordDTO);
+        if(! success){
+            throw new BusinessException(CodeEnum.SERVER_ERROR);
+        }
+        return true;
     }
 }

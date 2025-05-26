@@ -16,5 +16,4 @@ public class User {
     public enum Role { student, consultant, counsellor }
     public enum Gender { male, female }
 
-
 }

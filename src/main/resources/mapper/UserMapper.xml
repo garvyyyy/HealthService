@@ -5,7 +5,7 @@
 
 <mapper namespace="cn.garvy.project.healthservice.dao.UserMapper">
 
-    <resultMap id="'BaseResultMap" type="cn.garvy.project.healthservice.pojo.entity.User">
+    <resultMap id="'BaseResultMap" type="User">
         <id property="userId" column="user_id" jdbcType="INTEGER"/>
         <result property="role" column="role" jdbcType="VARCHAR"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
@@ -25,9 +25,9 @@
         WHERE user_id = #{id}
     </select>
 
-    <select id="findUserByNameANDPassword" resultMap="'BaseResultMap">
+    <select id="findUserByEmailANDPassword" parameterType="UserLoginDTO" resultMap="'BaseResultMap">
         SELECT * FROM user
-        WHERE name = #{username}
+        WHERE email = #{email}
         AND password = #{password}
     </select>
     
@@ -36,8 +36,14 @@
         WHERE email = #{email}
     </select>
 
-    <insert id="insertUser" >
+    <insert id="insertUser" parameterType="map">
         INSERT INTO user(email, password)
         VALUES (#{email}, #{password})
     </insert>
+
+    <update id="updatePassword" parameterType="ResetPasswordDTO">
+        UPDATE user
+        SET password = #{newpassword}
+        WHERE email = #{email}
+    </update>
 </mapper>

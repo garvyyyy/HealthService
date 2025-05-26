@@ -6,21 +6,23 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class CommonResult {
-    private Object data;
-    private String msg;
+@AllArgsConstructor
+public class CommonResult<T> {
     private Integer code;
-    public CommonResult(Object data,String msg,Integer code){
-        this.data = data;
-        this.msg = msg;
+    private String message;
+    private T data;
+
+    public CommonResult(Integer code, String message){
         this.code = code;
+        this.message = message;
     }
 
-    public CommonResult SUCCESS(Object data){
-        return new CommonResult(data, "login success", 200);
+    public CommonResult(T data){
+        this.data = data;
     }
 
-    public CommonResult FAILURE(){
-        return new CommonResult(null, "login failure", 201);
+    public static <T> CommonResult<T> success(CodeEnum codeEnum, T data){
+        CommonResult result = new CommonResult(codeEnum.getCode(),codeEnum.getMessage(), data);
+        return result;
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<CommonResult> handleBusinessException(BusinessException ex) {
-        ErrorResponse error = new ErrorResponse(ex.getCode(), ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CommonResult());
+        CommonResult result = new CommonResult(ex.getCode(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
     }
 }
