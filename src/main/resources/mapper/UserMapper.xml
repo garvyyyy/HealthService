@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="cn.garvy.project.healthservice.dao.UserMapper">
+
+    <resultMap id="'BaseResultMap" type="cn.garvy.project.healthservice.pojo.entity.User">
+        <id property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="role" column="role" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="gender" column="gender" jdbcType="VARCHAR"/>
+        <result property="age" column="age" jdbcType="TINYINT"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="findAllUser" resultMap="'BaseResultMap">
+        SELECT * FROM user
+    </select>
+
+    <select id="findUserById" resultMap="'BaseResultMap">
+        SELECT * FROM user
+        WHERE user_id = #{id}
+    </select>
+
+    <select id="findUserByNameANDPassword" resultMap="'BaseResultMap">
+        SELECT * FROM user
+        WHERE name = #{username}
+        AND password = #{password}
+    </select>
+    
+    <select id="findUserByEmail" resultMap="'BaseResultMap">
+        SELECT * FROM user
+        WHERE email = #{email}
+    </select>
+
+    <insert id="insertUser" >
+        INSERT INTO user(email, password)
+        VALUES (#{email}, #{password})
+    </insert>
+</mapper>
