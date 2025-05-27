@@ -1,6 +1,7 @@
 package cn.garvy.project.healthservice.Service.Impl;
 
 import cn.garvy.project.healthservice.Exception.BusinessException;
+import cn.garvy.project.healthservice.Service.EmailService;
 import cn.garvy.project.healthservice.Service.UserService;
 import cn.garvy.project.healthservice.common.CodeEnum;
 import cn.garvy.project.healthservice.dao.UserMapper;
@@ -22,6 +23,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private EmailService emailService;
+
     @Override
     public List<User> findAllUser() {
         return userMapper.findAllUser();
@@ -58,16 +62,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean register(UserRegisterDTO userRegisterDTO) {
-        User user = userMapper.findUserByEmail(userRegisterDTO.getEmail());
-        if(user != null){
+        boolean isNotRegistered = isNotRegistered(userRegisterDTO.getEmail());
+        if(! isNotRegistered){
             throw new BusinessException(CodeEnum.EMAIL_REGISTERED);
         }
-
-        boolean success = userMapper.insertUser(userRegisterDTO.getEmail(), userRegisterDTO.getPassword());
-        if(! success){
-            throw new BusinessException(CodeEnum.SERVER_ERROR);
+        boolean isCaptchaValid = emailService.verifyCaptcha(userRegisterDTO.getEmail(), userRegisterDTO.getCaptcha());
+        if(! isCaptchaValid){
+            throw new BusinessException(CodeEnum.CAPTCHA_ERROR);
         }
-        return true;
+        return userMapper.insertUser(userRegisterDTO.getEmail(), userRegisterDTO.getPassword());
     }
 
     public boolean resetPassword(ResetPasswordDTO resetPasswordDTO){

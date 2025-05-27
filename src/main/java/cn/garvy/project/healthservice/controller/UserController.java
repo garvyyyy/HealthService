@@ -41,10 +41,7 @@ public class UserController {
 
     @PostMapping("/send-captcha")
     public ResponseEntity<CommonResult> sendCaptcha(@RequestBody EmailDTO email){
-        boolean isNotRegistered = userService.isNotRegistered(email.getEmail());
-        if(isNotRegistered){
-            emailService.sendCaptcha(email.getEmail());
-        }
+        emailService.sendCaptcha(email.getEmail());
         CommonResult result = CommonResult.success(CodeEnum.EMAIL_SEND_SUCCESS, null);
         return ResultUtils.SUCCESS(result);
     }
