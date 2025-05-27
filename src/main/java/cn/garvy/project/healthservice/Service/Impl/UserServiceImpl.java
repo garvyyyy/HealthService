@@ -9,6 +9,7 @@ import cn.garvy.project.healthservice.pojo.DTO.UserLoginDTO;
 import cn.garvy.project.healthservice.pojo.DTO.UserRegisterDTO;
 import cn.garvy.project.healthservice.pojo.VO.UserInfoVO;
 import cn.garvy.project.healthservice.pojo.entity.User;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,12 +48,21 @@ public class UserServiceImpl implements UserService {
         return userInfoVO;
     }
 
+    public boolean isNotRegistered(String email){
+        User user = userMapper.findUserByEmail(email);
+        if(user != null){
+            throw new BusinessException(CodeEnum.EMAIL_REGISTERED);
+        }
+        return true;
+    }
+
     @Override
     public boolean register(UserRegisterDTO userRegisterDTO) {
         User user = userMapper.findUserByEmail(userRegisterDTO.getEmail());
         if(user != null){
-            throw new BusinessException(CodeEnum.USER_EXIST);
+            throw new BusinessException(CodeEnum.EMAIL_REGISTERED);
         }
+
         boolean success = userMapper.insertUser(userRegisterDTO.getEmail(), userRegisterDTO.getPassword());
         if(! success){
             throw new BusinessException(CodeEnum.SERVER_ERROR);

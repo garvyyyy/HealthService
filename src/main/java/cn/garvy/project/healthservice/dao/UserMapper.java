@@ -19,7 +19,7 @@ public interface UserMapper {
 
     User findUserByEmailANDPassword(@RequestBody UserLoginDTO userLoginDTO);
 
-    User findUserByEmail(String email);
+    User findUserByEmail(@Param("email") String email);
 
     boolean insertUser(@Param("email") String email, @Param("password") String password);
 

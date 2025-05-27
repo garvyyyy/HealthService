@@ -8,11 +8,33 @@ spring:
     username: root
     password: root
 
+
+  mail:
+    host: smtp.163.com
+    port: 465  # 修改为465端口
+    username: garvyyyy@163.com
+    password: KLaktt7UiBCfZtWM
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true  # 启用SSL
+          starttls:
+            enable: false  # 禁用STARTTLS
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: cn.garvy.project.healthservice.pojo
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
 
 logging:
   level:
