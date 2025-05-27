@@ -46,6 +46,10 @@ public class EmailServiceImpl implements EmailService {
 
         //保存验证码到redis
         saveCaptcha(toEmail,captcha);
+//        System.out.println("---------------------------");
+        System.out.println("captcha: \n" + captcha);
+//        System.out.println("---------------------------");
+//        System.out.println("captcha: " + redisTemplate.opsForValue().get(CODE_PREFIX + toEmail));
     }
 
 
@@ -53,6 +57,10 @@ public class EmailServiceImpl implements EmailService {
     public boolean verifyCaptcha(String email, String captcha) {
         String key = CODE_PREFIX + email;
         String saveCaptcha = redisTemplate.opsForValue().get(key);
+//        System.out.println("---------------------------");
+//        System.out.println(saveCaptcha);
+//        System.out.println("---------------------------");
+//        System.out.println(captcha);
         if(saveCaptcha != null && saveCaptcha.equals(captcha)){
             redisTemplate.delete(key);
             return true;
